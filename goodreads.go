@@ -12,11 +12,11 @@ var (
 	apiRoot = "http://www.goodreads.com/"
 )
 
-func GetSearch(query, key string) (Search_results, error) {
+func (c *Client) GetSearch(query string) (Search_results, error) {
 	// QueryEscape escapes the phone string so
 	// it can be safely placed inside a URL query
 	safeQuery := url.QueryEscape(query)
-	safeKey := url.QueryEscape(key)
+	safeKey := url.QueryEscape(c.consumer.ConsumerKey)
 
 	var model Search_GoodreadsResponse
 
@@ -29,7 +29,7 @@ func GetSearch(query, key string) (Search_results, error) {
 		return model.Search_search.Search_results, err
 	}
 
-	client := &http.Client{}
+	client := c.GetHttpClient()
 
 	resp, err := client.Do(req)
 	if err != nil {

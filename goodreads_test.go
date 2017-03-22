@@ -9,7 +9,8 @@ import (
 
 func TestGetSearch(t *testing.T) {
 	config := readConfig()
-	if response, _ := GetSearch("The Name of the Wind", config.GoodReadsKey); response.Search_work[0].Search_best_book.Search_title.Text != "The Name of the Wind (The Kingkiller Chronicle, #1)" {
+	gr := NewClient(config.GoodReadsKey, config.GoodReadsSecret)
+	if response, _ := gr.GetSearch("The Name of the Wind"); response.Search_work[0].Search_best_book.Search_title.Text != "The Name of the Wind (The Kingkiller Chronicle, #1)" {
 		t.Fail()
 	}
 
