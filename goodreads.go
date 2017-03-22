@@ -12,7 +12,7 @@ var (
 	apiRoot = "http://www.goodreads.com/"
 )
 
-func GetSearch(query, key string) Search_GoodreadsResponse {
+func GetSearch(query, key string) (Search_results, error) {
 	// QueryEscape escapes the phone string so
 	// it can be safely placed inside a URL query
 	safeQuery := url.QueryEscape(query)
@@ -26,7 +26,7 @@ func GetSearch(query, key string) Search_GoodreadsResponse {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatal("NewRequest: ", err)
-		return model
+		return model.Search_search.Search_results, err
 	}
 
 	client := &http.Client{}
@@ -34,7 +34,7 @@ func GetSearch(query, key string) Search_GoodreadsResponse {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal("Do: ", err)
-		return model
+		return model.Search_search.Search_results, err
 	}
 	defer resp.Body.Close()
 
@@ -42,5 +42,5 @@ func GetSearch(query, key string) Search_GoodreadsResponse {
 		log.Println(err)
 	}
 	fmt.Println(model.Search_search.Search_results.Search_work[0].Search_best_book.Search_title)
-	return model
+	return model.Search_search.Search_results, nil
 }

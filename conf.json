@@ -1,0 +1,10 @@
+{
+  "goodReadsKey" : "{YOUR KEY HERE}",
+  "goodReadsSecret" :"{YOUR KEY HERE}",
+  "slackToken" : "{YOUR KEY HERE}",
+  "goodReadsHost" : "www.goodreads.com",
+  "goodReadsPort" : "443",
+  "slackHost" : "hooks.slack.com",
+  "slackHostHttp" : "https://hooks.slack.com",
+  "isHTTPS" : "true"
+}
