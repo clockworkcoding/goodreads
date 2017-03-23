@@ -51,11 +51,11 @@ func (c *Client) GetSearch(query string) (Search_results, error) {
 	return response.Search_search.Search_results, nil
 }
 
-func (c *Client) GetBook(id int) (Book_book, error) {
+func (c *Client) GetBook(id string) (Book_book, error) {
 	var response Book_GoodreadsResponse
 	var emptyBook Book_book
 
-	url := apiRoot + fmt.Sprintf("book/show.xml?key=%s&id=%d", c.consumer.ConsumerKey, id)
+	url := apiRoot + fmt.Sprintf("book/show.xml?key=%s&id=%s", c.consumer.ConsumerKey, id)
 
 	// Build the request
 	req, err := http.NewRequest("GET", url, nil)

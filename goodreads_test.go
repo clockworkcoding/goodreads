@@ -26,7 +26,7 @@ func TestBadKey(t *testing.T) {
 func TestBookLookup(t *testing.T) {
 	config := readConfig()
 	gr := NewClient(config.GoodReadsKey, config.GoodReadsSecret)
-	if book, _ := gr.GetBook(30078567); book.Book_title[0].Text != "The Collapsing Empire (The Interdepency #1)" {
+	if book, _ := gr.GetBook("30078567"); book.Book_title[0].Text != "The Collapsing Empire (The Interdepency #1)" {
 
 		t.Fail()
 	}
@@ -35,7 +35,7 @@ func TestBookLookup(t *testing.T) {
 func TestBadBookLookup(t *testing.T) {
 	config := readConfig()
 	gr := NewClient(config.GoodReadsKey, config.GoodReadsSecret)
-	if _, err := gr.GetBook(300785673); err == nil {
+	if _, err := gr.GetBook("300785673"); err == nil {
 
 		t.Fail()
 	}
