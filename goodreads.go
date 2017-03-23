@@ -19,7 +19,7 @@ func (c *Client) GetSearch(query string) (Search_results, error) {
 	safeQuery := url.QueryEscape(query)
 	safeKey := url.QueryEscape(c.consumer.ConsumerKey)
 
-	var model Search_GoodreadsResponse
+	var response Search_GoodreadsResponse
 
 	url := apiRoot + fmt.Sprintf("search/index.xml?key=%s&q=%s", safeKey, safeQuery)
 
@@ -27,7 +27,7 @@ func (c *Client) GetSearch(query string) (Search_results, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatal("NewRequest: ", err)
-		return model.Search_search.Search_results, err
+		return response.Search_search.Search_results, err
 	}
 
 	client := c.GetHttpClient()
@@ -35,18 +35,52 @@ func (c *Client) GetSearch(query string) (Search_results, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal("Do: ", err)
-		return model.Search_search.Search_results, err
+		return response.Search_search.Search_results, err
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return model.Search_search.Search_results, errors.New(resp.Status)
+		return response.Search_search.Search_results, errors.New(resp.Status)
 	}
 
-	if err := xml.NewDecoder(resp.Body).Decode(&model); err != nil {
+	if err := xml.NewDecoder(resp.Body).Decode(&response); err != nil {
 		log.Println(err)
 	}
 
-	return model.Search_search.Search_results, nil
+	return response.Search_search.Search_results, nil
+}
+
+func (c *Client) GetBook(id int) (Book_book, error) {
+	var response Book_GoodreadsResponse
+	var emptyBook Book_book
+
+	url := apiRoot + fmt.Sprintf("book/show.xml?key=%s&id=%d", c.consumer.ConsumerKey, id)
+
+	// Build the request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatal("NewRequest: ", err)
+		return emptyBook, err
+	}
+
+	client := c.GetHttpClient()
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return emptyBook, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return emptyBook, errors.New(resp.Status)
+	}
+
+	if err := xml.NewDecoder(resp.Body).Decode(&response); err != nil {
+		log.Println(err)
+	}
+
+	return response.Book_book[0], nil
 }
