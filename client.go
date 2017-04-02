@@ -1,56 +1,72 @@
 package goodreads
 
-import(
-	"github.com/dghubble/oauth1"
-	"golang.org/x/net/context"
+import (
 	"net/http"
+
+	"github.com/mrjones/oauth"
 )
 
-// The Goodreads API Client object
+const (
+	REQUEST_TOKEN_URL   = "http://www.goodreads.com/oauth/request_token"
+	AUTHORIZE_TOKEN_URL = "http://www.goodreads.com/oauth/authorize"
+	ACCESS_TOKEN_URL    = "http://www.goodreads.com/oauth/access_token"
+)
+
+//Client is the Goodreads API Client object
 type Client struct {
-	consumer *oauth1.Config
-	user *oauth1.Token
-	client *http.Client
+	Consumer    *oauth.Consumer
+	user        *oauth.AccessToken
+	client      *http.Client
+	consumerKey string
 }
 
-// Constructor with only the consumer key and secret
-func NewClient(consumerKey string, consumerSecret string) *Client {
-	c := Client{}
-	c.SetConsumer(consumerKey, consumerSecret)
+//NewClient is the constructor with only the Consumer key and secret
+func NewClient(key string, secret string) *Client {
+	c := Client{
+		consumerKey: key,
+	}
+	c.SetConsumer(key, secret)
 	return &c
 }
 
-// Constructor with consumer key/secret and user token/secret
-func NewClientWithToken(consumerKey string, consumerSecret string, token string, tokenSecret string) *Client {
+// Constructor with Consumer key/secret and user token/secret
+func NewClientWithToken(consumerKey, consumerSecret, token string) *Client {
 	c := NewClient(consumerKey, consumerSecret)
-	c.SetToken(token, tokenSecret)
+	c.SetToken(token, consumerSecret)
 	return c
 }
 
-
-// Set consumer credentials, invalidates any previously cached client
+// Set Consumer credentials, invalidates any previously cached client
 func (c *Client) SetConsumer(consumerKey string, consumerSecret string) {
-	c.consumer = oauth1.NewConfig(consumerKey, consumerSecret)
+	c.Consumer = oauth.NewConsumer(consumerKey, consumerSecret,
+		oauth.ServiceProvider{
+			RequestTokenUrl:   REQUEST_TOKEN_URL,
+			AuthorizeTokenUrl: AUTHORIZE_TOKEN_URL,
+			AccessTokenUrl:    ACCESS_TOKEN_URL,
+		})
 	c.client = nil
 }
 
 // Set user credentials, invalidates any previously cached client
-func (c *Client) SetToken(token string, tokenSecret string) {
-	c.user = oauth1.NewToken(token, tokenSecret)
+func (c *Client) SetToken(token string, secret string) {
+	c.user = &oauth.AccessToken{
+		AdditionalData: nil,
+		Secret:         secret,
+		Token:          token,
+	}
 	c.client = nil
 }
 
-
 // Retrieve the underlying HTTP client
 func (c *Client) GetHttpClient() *http.Client {
-	if c.consumer == nil {
+	if c.Consumer == nil {
 		panic("Consumer credentials are not set")
 	}
 	if c.user == nil {
 		c.SetToken("", "")
 	}
 	if c.client == nil {
-		c.client = c.consumer.Client(context.TODO(), c.user)
+		c.client, _ = c.Consumer.MakeHttpClient(c.user)
 		c.client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		}

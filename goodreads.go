@@ -17,7 +17,7 @@ func (c *Client) GetSearch(query string) (Search_results, error) {
 	// QueryEscape escapes the phone string so
 	// it can be safely placed inside a URL query
 	safeQuery := url.QueryEscape(query)
-	safeKey := url.QueryEscape(c.consumer.ConsumerKey)
+	safeKey := url.QueryEscape(c.consumerKey)
 
 	var response Search_GoodreadsResponse
 
@@ -55,7 +55,7 @@ func (c *Client) GetBook(id string) (Book_book, error) {
 	var response Book_GoodreadsResponse
 	var emptyBook Book_book
 
-	url := apiRoot + fmt.Sprintf("book/show.xml?key=%s&id=%s", c.consumer.ConsumerKey, id)
+	url := apiRoot + fmt.Sprintf("book/show.xml?key=%s&id=%s", c.consumerKey, id)
 
 	// Build the request
 	req, err := http.NewRequest("GET", url, nil)
@@ -80,6 +80,7 @@ func (c *Client) GetBook(id string) (Book_book, error) {
 
 	if err := xml.NewDecoder(resp.Body).Decode(&response); err != nil {
 		log.Println(err)
+		return emptyBook, err
 	}
 
 	return response.Book_book[0], nil
