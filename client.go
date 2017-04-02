@@ -1,6 +1,7 @@
 package goodreads
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/mrjones/oauth"
@@ -30,9 +31,9 @@ func NewClient(key string, secret string) *Client {
 }
 
 // Constructor with Consumer key/secret and user token/secret
-func NewClientWithToken(consumerKey, consumerSecret, token string) *Client {
+func NewClientWithToken(consumerKey, consumerSecret, token, tokenSecret string) *Client {
 	c := NewClient(consumerKey, consumerSecret)
-	c.SetToken(token, consumerSecret)
+	c.SetToken(token, tokenSecret)
 	return c
 }
 
@@ -58,9 +59,10 @@ func (c *Client) SetToken(token string, secret string) {
 }
 
 // Retrieve the underlying HTTP client
-func (c *Client) GetHttpClient() *http.Client {
+func (c *Client) GetHttpClient() (*http.Client, error) {
 	if c.Consumer == nil {
-		panic("Consumer credentials are not set")
+		return nil, errors.New("Consumer credentials are not set")
+
 	}
 	if c.user == nil {
 		c.SetToken("", "")
@@ -71,5 +73,5 @@ func (c *Client) GetHttpClient() *http.Client {
 			return http.ErrUseLastResponse
 		}
 	}
-	return c.client
+	return c.client, nil
 }

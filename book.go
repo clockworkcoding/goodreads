@@ -1,5 +1,52 @@
 package goodreads
 
+import (
+	"encoding/xml"
+	"errors"
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func (c *Client) GetBook(id string) (Book_book, error) {
+	var response Book_GoodreadsResponse
+	var emptyBook Book_book
+
+	url := apiRoot + fmt.Sprintf("book/show.xml?key=%s&id=%s", c.consumerKey, id)
+
+	// Build the request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatal("NewRequest: ", err)
+		return emptyBook, err
+	}
+
+	client, err := c.GetHttpClient()
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return emptyBook, err
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return emptyBook, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return emptyBook, errors.New(resp.Status)
+	}
+
+	if err := xml.NewDecoder(resp.Body).Decode(&response); err != nil {
+		log.Println(err)
+		return emptyBook, err
+	}
+
+	return response.Book_book[0], nil
+}
+
 type Book_GoodreadsResponse struct {
 	Book_Request Book_Request `xml:" Request,omitempty" json:"Request,omitempty"`
 	Book_book    []Book_book  `xml:" book,omitempty" json:"book,omitempty"`
