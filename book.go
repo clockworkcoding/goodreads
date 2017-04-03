@@ -1,5 +1,52 @@
 package goodreads
 
+import (
+	"encoding/xml"
+	"errors"
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func (c *Client) GetBook(id string) (Book_book, error) {
+	var response Book_GoodreadsResponse
+	var emptyBook Book_book
+
+	url := apiRoot + fmt.Sprintf("book/show.xml?key=%s&id=%s", c.consumerKey, id)
+
+	// Build the request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatal("NewRequest: ", err)
+		return emptyBook, err
+	}
+
+	client, err := c.GetHttpClient()
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return emptyBook, err
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return emptyBook, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return emptyBook, errors.New(resp.Status)
+	}
+
+	if err := xml.NewDecoder(resp.Body).Decode(&response); err != nil {
+		log.Println(err)
+		return emptyBook, err
+	}
+
+	return response.Book_book[0], nil
+}
+
 type Book_GoodreadsResponse struct {
 	Book_Request Book_Request `xml:" Request,omitempty" json:"Request,omitempty"`
 	Book_book    []Book_book  `xml:" book,omitempty" json:"book,omitempty"`
@@ -24,14 +71,14 @@ type Book_author struct {
 	Book_image_url          []Book_image_url        `xml:" image_url,omitempty" json:"image_url,omitempty"`
 	Book_link               []Book_link             `xml:" link,omitempty" json:"link,omitempty"`
 	Book_name               Book_name               `xml:" name,omitempty" json:"name,omitempty"`
-	Book_ratings_count      Book_ratings_count      `xml:" ratings_count,omitempty" json:"ratings_count,omitempty"`
+	Book_ratings_count      []Book_ratings_count    `xml:" ratings_count,omitempty" json:"ratings_count,omitempty"`
 	Book_role               Book_role               `xml:" role,omitempty" json:"role,omitempty"`
 	Book_small_image_url    []Book_small_image_url  `xml:" small_image_url,omitempty" json:"small_image_url,omitempty"`
 	Book_text_reviews_count Book_text_reviews_count `xml:" text_reviews_count,omitempty" json:"text_reviews_count,omitempty"`
 }
 
 type Book_authors struct {
-	Book_author Book_author `xml:" author,omitempty" json:"author,omitempty"`
+	Book_author []Book_author `xml:" author,omitempty" json:"author,omitempty"`
 }
 
 type Book_average_rating struct {
@@ -68,7 +115,7 @@ type Book_book struct {
 	Book_publication_month    []Book_publication_month  `xml:" publication_month,omitempty" json:"publication_month,omitempty"`
 	Book_publication_year     []Book_publication_year   `xml:" publication_year,omitempty" json:"publication_year,omitempty"`
 	Book_publisher            Book_publisher            `xml:" publisher,omitempty" json:"publisher,omitempty"`
-	Book_ratings_count        Book_ratings_count        `xml:" ratings_count,omitempty" json:"ratings_count,omitempty"`
+	Book_ratings_count        []Book_ratings_count      `xml:" ratings_count,omitempty" json:"ratings_count,omitempty"`
 	Book_reviews_widget       Book_reviews_widget       `xml:" reviews_widget,omitempty" json:"reviews_widget,omitempty"`
 	Book_series_works         Book_series_works         `xml:" series_works,omitempty" json:"series_works,omitempty"`
 	Book_similar_books        Book_similar_books        `xml:" similar_books,omitempty" json:"similar_books,omitempty"`
@@ -270,6 +317,7 @@ type Book_reviews_widget struct {
 }
 
 type Book_role struct {
+	Text string `xml:",chardata" json:",omitempty"`
 }
 
 type Book_root struct {
@@ -293,7 +341,7 @@ type Book_series_work struct {
 }
 
 type Book_series_works struct {
-	Book_series_work Book_series_work `xml:" series_work,omitempty" json:"series_work,omitempty"`
+	Book_series_work []Book_series_work `xml:" series_work,omitempty" json:"series_work,omitempty"`
 }
 
 type Book_series_works_count struct {
@@ -349,7 +397,7 @@ type Book_work struct {
 	Book_original_publication_year         Book_original_publication_year         `xml:" original_publication_year,omitempty" json:"original_publication_year,omitempty"`
 	Book_original_title                    Book_original_title                    `xml:" original_title,omitempty" json:"original_title,omitempty"`
 	Book_rating_dist                       Book_rating_dist                       `xml:" rating_dist,omitempty" json:"rating_dist,omitempty"`
-	Book_ratings_count                     Book_ratings_count                     `xml:" ratings_count,omitempty" json:"ratings_count,omitempty"`
+	Book_ratings_count                     []Book_ratings_count                   `xml:" ratings_count,omitempty" json:"ratings_count,omitempty"`
 	Book_ratings_sum                       Book_ratings_sum                       `xml:" ratings_sum,omitempty" json:"ratings_sum,omitempty"`
 	Book_reviews_count                     Book_reviews_count                     `xml:" reviews_count,omitempty" json:"reviews_count,omitempty"`
 	Book_text_reviews_count                Book_text_reviews_count                `xml:" text_reviews_count,omitempty" json:"text_reviews_count,omitempty"`
