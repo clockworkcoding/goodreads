@@ -74,12 +74,12 @@ func (c Client) ReviewList(userID string, params ReviewListParameters) (response
 	if resp.StatusCode != 200 {
 		return response, errors.New(resp.Status)
 	}
-
-	if err := xml.NewDecoder(resp.Body).Decode(&response); err != nil {
+	var goodreadsResponse Reviews_GoodreadsResponse
+	if err := xml.NewDecoder(resp.Body).Decode(&goodreadsResponse); err != nil {
 		log.Println(err)
 	}
 
-	return
+	return goodreadsResponse.Reviews_reviews, nil
 }
 
 type Reviews_GoodreadsResponse struct {
