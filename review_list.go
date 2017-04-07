@@ -54,7 +54,7 @@ func (c Client) ReviewList(userID string, params ReviewListParameters) (response
 	// Build the request
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
-		log.Fatal("NewRequest: ", err)
+		log.Println("NewRequest: ", err)
 		return
 	}
 
@@ -65,7 +65,7 @@ func (c Client) ReviewList(userID string, params ReviewListParameters) (response
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal("Do: ", err)
+		log.Println("Do: ", err)
 		return
 	}
 

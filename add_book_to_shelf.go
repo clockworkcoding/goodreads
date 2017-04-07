@@ -18,7 +18,7 @@ func (c *Client) AddBookToShelf(bookid, shelfName string) (err error) {
 	// Build the request
 	req, err := http.NewRequest("POST", postURL, strings.NewReader(form.Encode()))
 	if err != nil {
-		log.Fatal("NewRequest: ", err)
+		log.Println("NewRequest: ", err)
 		return
 	}
 
@@ -29,7 +29,7 @@ func (c *Client) AddBookToShelf(bookid, shelfName string) (err error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal("Do: ", err)
+		log.Println("Do: ", err)
 		return
 	}
 

@@ -17,19 +17,19 @@ func (c *Client) GetBook(id string) (Book_book, error) {
 	// Build the request
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Fatal("NewRequest: ", err)
+		log.Println("NewRequest: ", err)
 		return emptyBook, err
 	}
 
 	client, err := c.GetHttpClient()
 	if err != nil {
-		log.Fatal("Do: ", err)
+		log.Println("Do: ", err)
 		return emptyBook, err
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal("Do: ", err)
+		log.Println("Do: ", err)
 		return emptyBook, err
 	}
 
