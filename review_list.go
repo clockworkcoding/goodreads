@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 const ()
@@ -43,14 +44,13 @@ func (c Client) ReviewList(userID string, params ReviewListParameters) (response
 		form.Add("order", params.Order)
 	}
 	if params.Page > 0 {
-		form.Add("Page", string(params.Page))
+		form.Add("page", strconv.Itoa(params.Page))
 	}
 	if params.PerPage > 0 {
-		form.Add("per_page", string(params.PerPage))
+		form.Add("per_page", strconv.Itoa(params.PerPage))
 	}
 
 	apiURL := fmt.Sprintf("%sreview/list.xml?%s", apiRoot, form.Encode())
-	fmt.Println(apiURL)
 	// Build the request
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {

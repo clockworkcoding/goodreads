@@ -17,3 +17,16 @@ func TestGetShelf(t *testing.T) {
 		fmt.Println(response)
 	}
 }
+
+func TestGetShelfWithPages(t *testing.T) {
+	config := readConfig()
+	c := NewClientWithToken(config.GoodReadsKey, config.GoodReadsSecret, config.SlackToken, config.GoodReadsHost)
+
+	if response, err := c.GetShelf("22966785", ReviewListParameters{Shelf: "read", Page: 2, PerPage: 50}); err != nil {
+		fmt.Println("Get Shelf: " + err.Error())
+		t.Fail()
+	} else {
+		fmt.Println("Get Shelf: " + err.Error())
+		fmt.Println(response)
+	}
+}
