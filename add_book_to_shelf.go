@@ -1,6 +1,7 @@
 package goodreads
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -30,6 +31,11 @@ func (c *Client) AddBookToShelf(bookid, shelfName string) (err error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println("Do: ", err)
+		return
+	}
+
+	if resp.StatusCode != 201 {
+		err = errors.New(resp.Status)
 		return
 	}
 

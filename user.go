@@ -2,6 +2,7 @@ package goodreads
 
 import (
 	"encoding/xml"
+	"errors"
 	"log"
 )
 
@@ -16,6 +17,9 @@ func (c *Client) QueryUser() (user User_user, err error) {
 		"https://www.goodreads.com/api/auth_user")
 	if err != nil {
 		return
+	}
+	if resp.StatusCode != 200 {
+		return user, errors.New(resp.Status)
 	}
 	defer resp.Body.Close()
 

@@ -9,7 +9,7 @@ import (
 	"net/url"
 )
 
-func (c *Client) GetSearch(query string) (Search_results, error) {
+func (c *Client) GetSearch(query string) (searchResults Search_results, err error) {
 	// QueryEscape escapes the phone string so
 	// it can be safely placed inside a URL query
 	safeQuery := url.QueryEscape(query)
@@ -36,6 +36,11 @@ func (c *Client) GetSearch(query string) (Search_results, error) {
 	if err != nil {
 		log.Println("Do: ", err)
 		return response.Search_search.Search_results, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = errors.New(resp.Status)
+		return
 	}
 
 	defer resp.Body.Close()
