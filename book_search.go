@@ -9,6 +9,7 @@ import (
 	"net/url"
 )
 
+//GetSearch allows search on any string value
 func (c *Client) GetSearch(query string) (searchResults Search_results, err error) {
 	// QueryEscape escapes the phone string so
 	// it can be safely placed inside a URL query

@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+//GetUserShelves returns a summary of the shelves in the user's account. Requires OAuth
 func (c Client) GetUserShelves(id string) (shelves Shelf_shelves, err error) {
 	var response Shelf_GoodreadsResponse
 

@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+//GetBook returns book details given an ID
 func (c *Client) GetBook(id string) (Book_book, error) {
 	var response Book_GoodreadsResponse
 	var emptyBook Book_book

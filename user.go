@@ -6,6 +6,7 @@ import (
 	"log"
 )
 
+//QueryUser Returns the user id and profile link. Requires OAuth
 func (c *Client) QueryUser() (user User_user, err error) {
 
 	client, err := c.GetHttpClient()

@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+//AddBookToShelf Adds a book to the given shelf. If not one of the defaults, it will also be added to "read"
 func (c *Client) AddBookToShelf(bookid, shelfName string) (err error) {
 
 	postURL := fmt.Sprintf("%sshelf/add_to_shelf.xml", apiRoot)

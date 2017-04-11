@@ -7,7 +7,7 @@ import (
 
 func TestGetUser(t *testing.T) {
 	config := readConfig()
-	c := NewClientWithToken(config.GoodReadsKey, config.GoodReadsSecret, config.SlackToken, config.GoodReadsHost)
+	c := NewClientWithToken(config.GoodReadsKey, config.GoodReadsSecret, config.UserToken, config.UserSecret)
 	if xml, err := c.QueryUser(); err != nil {
 		fmt.Println(err.Error())
 		t.Fail()
@@ -18,7 +18,7 @@ func TestGetUser(t *testing.T) {
 
 func TestAddToShelf(t *testing.T) {
 	config := readConfig()
-	c := NewClientWithToken(config.GoodReadsKey, config.GoodReadsSecret, config.SlackToken, config.GoodReadsHost)
+	c := NewClientWithToken(config.GoodReadsKey, config.GoodReadsSecret, config.UserToken, config.UserSecret)
 	if err := c.AddBookToShelf("645180", "read"); err != nil {
 		fmt.Println(err.Error())
 		t.Fail()

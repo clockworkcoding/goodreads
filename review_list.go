@@ -21,10 +21,12 @@ type ReviewListParameters struct {
 	PerPage int
 }
 
+//GetShelf is an alternate name for ReviewList because  it's listed as both in the Goodreads API documentation
 func (c Client) GetShelf(userID string, params ReviewListParameters) (response Reviews_reviews, err error) {
 	return c.ReviewList(userID, params)
 }
 
+//ReviewList returns the boks on shelves and reviews for the user. Requires OAuth
 func (c Client) ReviewList(userID string, params ReviewListParameters) (response Reviews_reviews, err error) {
 
 	form := url.Values{}
