@@ -1,5 +1,5 @@
 package goodreads
 
 var (
-	apiRoot = "http://www.goodreads.com/"
+	apiRoot = "https://www.goodreads.com/"
 )

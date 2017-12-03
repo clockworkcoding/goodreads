@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	REQUEST_TOKEN_URL   = "http://www.goodreads.com/oauth/request_token"
-	AUTHORIZE_TOKEN_URL = "http://www.goodreads.com/oauth/authorize"
-	ACCESS_TOKEN_URL    = "http://www.goodreads.com/oauth/access_token"
+	REQUEST_TOKEN_URL   = "https://www.goodreads.com/oauth/request_token"
+	AUTHORIZE_TOKEN_URL = "https://www.goodreads.com/oauth/authorize"
+	ACCESS_TOKEN_URL    = "https://www.goodreads.com/oauth/access_token"
 )
 
 //Client is the Goodreads API Client object
